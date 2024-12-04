@@ -56,30 +56,6 @@ class BacktestEngine:
             
             stats = bt.run()
             
-            # Log detailed results
-            logger.info(f"\n{'='*50}")
-            logger.info(f"Backtest Results for {self.symbol}")
-            logger.info(f"{'='*50}")
-            logger.info(f"Configuration:")
-            logger.info(f"  Initial Cash: ${INITIAL_CASH:,.2f}")
-            logger.info(f"  Commission: {COMMISSION*100:.2f}%")
-            logger.info(f"  Strategy: {self.strategy.__class__.__name__}")
-            logger.info(f"  Strategy Parameters: {self.params}")
-            
-            logger.info(f"\nPerformance Metrics:")
-            logger.info(f"  Total Return: {stats['Return [%]']:.2f}%")
-            logger.info(f"  Sharpe Ratio: {stats['Sharpe Ratio']:.2f}")
-            logger.info(f"  Max Drawdown: {stats['Max. Drawdown [%]']:.2f}%")
-            logger.info(f"  Win Rate: {stats['Win Rate [%]']:.2f}%")
-            logger.info(f"  Number of Trades: {stats['# Trades']}")
-            logger.info(f"  Profit Factor: {stats.get('Profit Factor', 0):.2f}")
-            logger.info(f"  Average Trade: ${stats.get('Avg. Trade', 0):.2f}")
-            logger.info(f"  Max Trade: ${stats.get('Best Trade', 0):.2f}")
-            logger.info(f"  Min Trade: ${stats.get('Worst Trade', 0):.2f}")
-            logger.info(f"  Start Date: {data_with_signals.index[0].strftime('%Y-%m-%d')}")
-            logger.info(f"  End Date: {data_with_signals.index[-1].strftime('%Y-%m-%d')}")
-            logger.info(f"{'='*50}\n")
-            
             return {
                 'symbol': self.symbol,
                 'return': stats['Return [%]'],

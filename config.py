@@ -12,6 +12,7 @@ LOG_DIR = os.path.join(BASE_DIR, "logs")
 
 # Number of files to copy
 NUM_FILES_TO_COPY = 10
+SHUFFLE_STOCKS = True
 
 # Create necessary directories
 for directory in [RESULTS_DIR, LOG_DIR]:

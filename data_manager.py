@@ -48,14 +48,11 @@ def copy_random_files() -> None:
     num_files = min(len(stock_files), NUM_FILES_TO_COPY)
     selected_files = random.sample(stock_files, num_files)
     
-    logging.info(f"Copying {num_files} random files to test data...")
-    
     for file_name in selected_files:
         source = os.path.join(STOCKS_DIR, file_name)
         destination = os.path.join(TEST_DATA_DIR, file_name)
         try:
             shutil.copy2(source, destination)
-            logging.info(f"Copied: {file_name}")
         except Exception as e:
             logging.error(f"Error copying {file_name}: {str(e)}")
 
