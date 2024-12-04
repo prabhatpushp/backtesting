@@ -11,6 +11,8 @@ from config import STRATEGY_PARAMS, LOG_FILE, RESULTS_DIR, INITIAL_CASH, COMMISS
 from data_manager import setup_test_data
 from utils.data_loader import DataLoader
 from strategies.buy_hold_strategy import BuyAndHoldStrategy
+from strategies.moving_average_strategy import MovingAverageStrategy
+from strategies.price_action_strategy import PriceActionStrategy
 from backtester import BacktestEngine
 
 def setup_logging():
@@ -74,7 +76,7 @@ def main():
         print(f"Found {len(stock_data)} stocks to process")
         
         # Initialize strategy
-        strategy = BuyAndHoldStrategy(STRATEGY_PARAMS)
+        strategy = PriceActionStrategy(STRATEGY_PARAMS)
         
         # Run backtest for each stock
         results = []
