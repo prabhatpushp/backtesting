@@ -6,8 +6,8 @@ from .base_strategy import BaseStrategy
 class PriceActionStrategy(BaseStrategy):
     """
     A price action based strategy that:
-    1. Buys more when price drops 10% from last buy price
-    2. Sells when profit exceeds 20% from average buy price
+    1. Buys more when price drops in 5% increments from last buy price
+    2. Sells portions when price rises in 5% increments from average buy price
     """
     
     def generate_signals(self, data: pd.DataFrame) -> pd.DataFrame:
@@ -24,6 +24,9 @@ class PriceActionStrategy(BaseStrategy):
             position = 0  # Current position
             avg_buy_price = 0.0  # Average buy price
             last_buy_price = 0.0  # Last buy price
+            max_position = 10  # Maximum number of positions to take
+            drop_threshold = 0.05  # 5% threshold for buying
+            profit_threshold = 0.1  # 5% threshold for selling
             
             # Process each row
             for i in range(len(data)):
@@ -35,22 +38,38 @@ class PriceActionStrategy(BaseStrategy):
                     avg_buy_price = current_price
                     last_buy_price = current_price
                 else:
-                    # Check for additional buy condition (10% drop from last buy)
-                    if current_price <= last_buy_price * 0.9:
+                    # Calculate price drop percentage from last buy
+                    price_drop = (last_buy_price - current_price) / last_buy_price
+                    
+                    # Calculate profit percentage from average buy price
+                    profit = (current_price - avg_buy_price) / avg_buy_price
+                    
+                    # Buy more if price drops by additional 5% increments and we haven't reached max position
+                    if price_drop >= drop_threshold and position < max_position:
                         data.iloc[i, data.columns.get_loc('Signal')] = 1
                         position += 1
                         # Update average buy price
                         avg_buy_price = ((avg_buy_price * (position - 1)) + current_price) / position
                         last_buy_price = current_price
                     
-                    # Check for sell condition (20% profit from average)
-                    elif current_price >= avg_buy_price * 1.2 and position > 0:
-                        data.iloc[i, data.columns.get_loc('Signal')] = -1
-                        position = 0
-                        avg_buy_price = 0.0
-                        last_buy_price = 0.0
+                    # Sell portions if profit reaches 5% increments
+                    elif profit >= profit_threshold and position > 0:
+                        # Calculate how many portions to sell based on profit level
+                        portions_to_sell = min(
+                            position,
+                            int(profit / profit_threshold)  # Sell more portions at higher profit levels
+                        )
+                        
+                        if portions_to_sell > 0:
+                            data.iloc[i, data.columns.get_loc('Signal')] = -portions_to_sell
+                            position -= portions_to_sell
+                            
+                            # Reset prices if we sold everything
+                            if position == 0:
+                                avg_buy_price = 0.0
+                                last_buy_price = 0.0
                 
-                # Update tracking columns
+                # Update position tracking
                 data.iloc[i, data.columns.get_loc('Position')] = position
                 data.iloc[i, data.columns.get_loc('Avg_Buy_Price')] = avg_buy_price
                 data.iloc[i, data.columns.get_loc('Last_Buy_Price')] = last_buy_price

@@ -1,0 +1,33 @@
+{
+  "data": {
+    "stocks_dir": "./data/stocks",
+    "test_data_dir": "./data/test_stocks",
+    "file_format": "csv",
+    "date_column": "Date",
+    "close_column": "Close",
+    "high_column": "High",
+    "low_column": "Low",
+    "open_column": "Open",
+    "volume_column": "Volume"
+  },
+  "randomizer": {
+    "enabled": true,
+    "test_stocks_count": 5,
+    "random_seed": 42
+  },
+  "results": {
+    "output_dir": "./results",
+    "save_plots": true,
+    "plot_style": "default",
+    "save_trade_details": true,
+    "save_metrics": true
+  },
+  "short_window": 10,
+  "long_window": 20,
+  "initial_cash": 10000,
+  "commission": 0.001,
+  "logging": {
+    "level": "INFO",
+    "format": "%(asctime)s - %(name)s - %(levelname)s - %(message)s"
+  }
+}

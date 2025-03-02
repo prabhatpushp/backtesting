@@ -15,9 +15,12 @@ class BacktestEngine:
         self.symbol = stock_symbol
         self.params = params or {}
         
-    def run(self) -> Dict[str, Any]:
+    def run(self, plot: bool = False) -> Dict[str, Any]:
         """
         Run the backtest for a single stock.
+        
+        Args:
+            plot (bool): Whether to plot the backtest results
         
         Returns:
             Dict[str, Any]: Dictionary containing backtest results
@@ -46,31 +49,33 @@ class BacktestEngine:
                         self.signal_index += 1
             
             # Initialize and run backtest
-            bt = Backtest(
+            self.bt = Backtest(
                 data_with_signals,
                 CustomStrategy,
                 cash=INITIAL_CASH,
-                commission=COMMISSION,
-                exclusive_orders=True
+                commission=COMMISSION
             )
             
-            stats = bt.run()
+            stats = self.bt.run()
+            
+            if plot:
+                self.bt.plot(filename=os.path.join(RESULTS_DIR, f"{self.symbol}_backtest.html"))
             
             return {
                 'symbol': self.symbol,
-                'return': stats['Return [%]'],
-                'sharpe': stats['Sharpe Ratio'],
-                'max_drawdown': stats['Max. Drawdown [%]'],
-                'win_rate': stats['Win Rate [%]'],
-                'trades': stats['# Trades'],
-                'profit_factor': stats.get('Profit Factor', 0),
-                'avg_trade': stats.get('Avg. Trade', 0),
-                'best_trade': stats.get('Best Trade', 0),
-                'worst_trade': stats.get('Worst Trade', 0)
+                'return': float(stats['Return [%]']),
+                'sharpe': float(stats['Sharpe Ratio']),
+                'max_drawdown': float(stats['Max. Drawdown [%]']),
+                'trades': int(stats['# Trades']),
+                'win_rate': float(stats['Win Rate [%]']),
+                'profit_factor': float(stats.get('Profit Factor', 0)),
+                'avg_trade': float(stats.get('Avg. Trade', 0)),
+                'best_trade': float(stats.get('Best Trade', 0)),
+                'worst_trade': float(stats.get('Worst Trade', 0))
             }
             
         except Exception as e:
-            logger.error(f"Error in backtest for {self.symbol}: {str(e)}")
+            logger.error(f"Error running backtest for {self.symbol}: {str(e)}")
             return {
                 'symbol': self.symbol,
                 'error': str(e)

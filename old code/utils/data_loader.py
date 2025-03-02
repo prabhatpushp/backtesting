@@ -28,7 +28,7 @@ class DataLoader:
                 return None
             
             # Convert Date to datetime
-            df['Date'] = pd.to_datetime(df['Date'])
+            df['Date'] = pd.to_datetime(df['Date'], unit="s")
             df.set_index('Date', inplace=True)
             
             # Sort by date
