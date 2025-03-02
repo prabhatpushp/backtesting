@@ -44,7 +44,7 @@ To use the Backtesting Framework, follow these steps:
 To set up the Backtesting Framework, follow these steps:
 1. Clone the repository:
    ```bash
-   git clone <repository-url>
+   git clone https://github.com/prabhatpushp/backtesting
    cd backtesting
    ```
 2. Create a virtual environment (optional but recommended):
